@@ -131,7 +131,7 @@ const App = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/tasks?user_id=1");
+      const response = await fetch("https://tasksphere-ai.onrender.com/api/tasks?user_id=1");
       if (!response.ok) throw new Error("Failed to fetch tasks.");
       const data = await response.json();
       setTasks(data);
@@ -142,7 +142,7 @@ const App = () => {
 
   const fetchCompletedTasks = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/tasks?user_id=1&completed=true");
+      const response = await fetch("https://tasksphere-ai.onrender.com/api/tasks?user_id=1&completed=true");
       if (!response.ok) throw new Error("Failed to fetch completed tasks.");
       const data = await response.json();
       setCompletedTasks(data);
@@ -153,7 +153,7 @@ const App = () => {
 
   const fetchDeletedTasks = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/deleted_tasks?user_id=1");
+      const response = await fetch("https://tasksphere-ai.onrender.com/api/deleted_tasks?user_id=1");
       if (!response.ok) throw new Error("Failed to fetch deleted tasks.");
       const data = await response.json();
       setDeletedTasks(data);
@@ -164,7 +164,7 @@ const App = () => {
 
   const handleLogin = async (username, password) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
+      const response = await fetch("https://tasksphere-ai.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -193,7 +193,7 @@ const App = () => {
         const payload = { title: newTask, user_id: 1 }; // Assuming user_id is 1 for testing
         console.log("Sending payload:", payload);
 
-        const response = await fetch("http://127.0.0.1:5000/api/tasks", {
+        const response = await fetch("https://tasksphere-ai.onrender.com/api/tasks", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -218,7 +218,7 @@ const App = () => {
 
   const handleToggleComplete = async (taskId, completed) => {
     try {
-      await fetch(`http://127.0.0.1:5000/api/tasks/${taskId}`, {
+      await fetch(`https://tasksphere-ai.onrender.com/api/tasks/${taskId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ completed: !completed }),
@@ -232,7 +232,7 @@ const App = () => {
 
   const handleDelete = async (taskId) => {
     try {
-      await fetch(`http://127.0.0.1:5000/api/tasks/${taskId}`, {
+      await fetch(`https://tasksphere-ai.onrender.com/api/tasks/${taskId}`, {
         method: "DELETE",
       });
       fetchTasks();
