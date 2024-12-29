@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import "./App.css";
 
+const API_BASE_URL = "https://tasksphere-ai.onrender.com/api"; // Replace with your actual backend URL
+
 // Custom components
 const Header = ({ isAuthenticated, handleLogout }) => (
   <header className="app-header">
@@ -131,7 +133,7 @@ const App = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch("https://tasksphere-ai.onrender.com/api/tasks?user_id=1");
+      const response = await fetch(`${API_BASE_URL}/tasks?user_id=1`);
       if (!response.ok) throw new Error("Failed to fetch tasks.");
       const data = await response.json();
       setTasks(data);
@@ -142,7 +144,7 @@ const App = () => {
 
   const fetchCompletedTasks = async () => {
     try {
-      const response = await fetch("https://tasksphere-ai.onrender.com/api/tasks?user_id=1&completed=true");
+      const response = await fetch(`${API_BASE_URL}/tasks?user_id=1&completed=true`);
       if (!response.ok) throw new Error("Failed to fetch completed tasks.");
       const data = await response.json();
       setCompletedTasks(data);
@@ -153,7 +155,7 @@ const App = () => {
 
   const fetchDeletedTasks = async () => {
     try {
-      const response = await fetch("https://tasksphere-ai.onrender.com/api/deleted_tasks?user_id=1");
+      const response = await fetch(`${API_BASE_URL}/deleted_tasks?user_id=1`);
       if (!response.ok) throw new Error("Failed to fetch deleted tasks.");
       const data = await response.json();
       setDeletedTasks(data);
@@ -164,7 +166,7 @@ const App = () => {
 
   const handleLogin = async (username, password) => {
     try {
-      const response = await fetch("https://tasksphere-ai.onrender.com/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -193,7 +195,7 @@ const App = () => {
         const payload = { title: newTask, user_id: 1 }; // Assuming user_id is 1 for testing
         console.log("Sending payload:", payload);
 
-        const response = await fetch("https://tasksphere-ai.onrender.com/api/tasks", {
+        const response = await fetch(`${API_BASE_URL}/tasks`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -218,7 +220,7 @@ const App = () => {
 
   const handleToggleComplete = async (taskId, completed) => {
     try {
-      await fetch(`https://tasksphere-ai.onrender.com/api/tasks/${taskId}`, {
+      await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ completed: !completed }),
@@ -232,7 +234,7 @@ const App = () => {
 
   const handleDelete = async (taskId) => {
     try {
-      await fetch(`https://tasksphere-ai.onrender.com/api/tasks/${taskId}`, {
+      await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
         method: "DELETE",
       });
       fetchTasks();
