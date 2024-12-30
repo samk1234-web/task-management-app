@@ -4,7 +4,7 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://tasksphere-ai.netlify.app"}})
 
 # Initialize the database
 DATABASE = 'tasks.db'
