@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import "./App.css";
 
-const API_BASE_URL = "https://tasksphere-ai.onrender.com/api"; // Replace with your actual backend URL
+const API_BASE_URL = "https://tasksphere-ai.onrender.com"; // Replace with your actual backend URL
 
 // Custom components
 const Header = ({ isAuthenticated, handleLogout }) => (
