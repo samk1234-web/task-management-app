@@ -14,10 +14,25 @@ class Task(db.Model):
     completed = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'completed': self.completed,
+            'user_id': self.user_id
+        }
+
 class DeletedTask(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'user_id': self.user_id
+        }
 
 @app.route('/tasks', methods=['GET', 'POST'])
 def tasks():
