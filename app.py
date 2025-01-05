@@ -2,16 +2,18 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, UserMixin, login_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 import os
 
 app = Flask(__name__)
 CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+app.config['SECRET_KEY'] = 'your_secret_key_here'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,9 +57,10 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 @app.route('/tasks', methods=['GET', 'POST'])
+@login_required
 def tasks():
     if request.method == 'GET':
-        user_id = request.args.get('user_id')
+        user_id = current_user.id
         completed = request.args.get('completed')
         if completed:
             tasks = Task.query.filter_by(user_id=user_id, completed=True).all()
@@ -67,14 +70,17 @@ def tasks():
     
     if request.method == 'POST':
         data = request.get_json()
-        new_task = Task(title=data['title'], user_id=data['user_id'])
+        new_task = Task(title=data['title'], user_id=current_user.id)
         db.session.add(new_task)
         db.session.commit()
         return jsonify(new_task.to_dict()), 201
 
 @app.route('/tasks/<int:task_id>', methods=['PUT', 'DELETE'])
+@login_required
 def task_detail(task_id):
     task = Task.query.get_or_404(task_id)
+    if task.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized access'}), 403
 
     if request.method == 'PUT':
         data = request.get_json()
@@ -90,8 +96,9 @@ def task_detail(task_id):
         return '', 204
 
 @app.route('/deleted_tasks', methods=['GET'])
+@login_required
 def deleted_tasks():
-    user_id = request.args.get('user_id')
+    user_id = current_user.id
     tasks = DeletedTask.query.filter_by(user_id=user_id).all()
     return jsonify([task.to_dict() for task in tasks])
 
@@ -105,6 +112,12 @@ def login():
         login_user(user)
         return '', 200
     return 'Invalid credentials', 401
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return '', 200
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
