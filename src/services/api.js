@@ -9,9 +9,9 @@ const fetchAPI = async (endpoint, options = {}) => {
   return response.json();
 };
 
-export const fetchTasks = () => fetchAPI("/tasks?user_id=1");
-export const fetchCompletedTasks = () => fetchAPI("/tasks?user_id=1&completed=true");
-export const fetchDeletedTasks = () => fetchAPI("/deleted_tasks?user_id=1");
+export const fetchTasks = (user_id) => fetchAPI(`/tasks?user_id=${user_id}`);
+export const fetchCompletedTasks = (user_id) => fetchAPI(`/tasks?user_id=${user_id}&completed=true`);
+export const fetchDeletedTasks = (user_id) => fetchAPI(`/deleted_tasks?user_id=${user_id}`);
 export const login = async ({ username, password }) => {
   const response = await fetch(`${API_BASE_URL}/login`, {
     method: "POST",
