@@ -1,12 +1,15 @@
 const API_BASE_URL = "https://tasksphere-ai.onrender.com";
-
-const fetchAPI = async (endpoint, options = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+...
+export const login = async ({ username, password }) => {
+  const response = await fetch(`${API_BASE_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to fetch data.");
+    throw new Error(errorData.error || "Invalid credentials");
   }
-  return response.json();
 };
 
 export const fetchTasks = (user_id) => fetchAPI(`/tasks?user_id=${user_id}`);
