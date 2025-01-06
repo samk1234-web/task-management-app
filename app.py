@@ -1,9 +1,10 @@
+import os
+import logging
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
-import os
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +15,9 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -62,11 +66,15 @@ def tasks():
     if request.method == 'GET':
         user_id = current_user.id
         completed = request.args.get('completed')
-        if completed:
-            tasks = Task.query.filter_by(user_id=user_id, completed=True).all()
-        else:
-            tasks = Task.query.filter_by(user_id=user_id).all()
-        return jsonify([task.to_dict() for task in tasks])
+        try:
+            if completed:
+                tasks = Task.query.filter_by(user_id=user_id, completed=True).all()
+            else:
+                tasks = Task.query.filter_by(user_id=user_id).all()
+            return jsonify([task.to_dict() for task in tasks])
+        except Exception as e:
+            logging.error(f"Error fetching tasks: {e}")
+            return jsonify([]), 200
     
     if request.method == 'POST':
         data = request.get_json()
@@ -99,8 +107,12 @@ def task_detail(task_id):
 @login_required
 def deleted_tasks():
     user_id = current_user.id
-    tasks = DeletedTask.query.filter_by(user_id=user_id).all()
-    return jsonify([task.to_dict() for task in tasks])
+    try:
+        tasks = DeletedTask.query.filter_by(user_id=user_id).all()
+        return jsonify([task.to_dict() for task in tasks])
+    except Exception as e:
+        logging.error(f"Error fetching deleted tasks: {e}")
+        return jsonify([]), 200
 
 @app.route('/login', methods=['POST'])
 def login():
