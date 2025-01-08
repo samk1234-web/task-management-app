@@ -111,7 +111,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage handleLogin={handleLogin} error={error} />} />
-        <Route path="/tasks" element={isAuthenticated ? <TaskPage tasks={tasks} handleAddTask={handleAddTask} handleToggleComplete={handleToggleComplete} handleDelete={handleDelete} newTask={newTask} setNewTask={setNewTask} /> : <Navigate to="/login" />} />
+        <Route path="/tasks" element={isAuthenticated ? <TaskPage tasks={tasks} handleAddTask={handleAddTask} handleToggleComplete={handleToggleComplete} handleDelete={handleDelete} newTask={newTask} error={error} /> : <Navigate to="/login" />} />
         <Route path="/completed" element={isAuthenticated ? <CompletedPage completedTasks={completedTasks} handleToggleComplete={handleToggleComplete} handleDelete={handleDelete} /> : <Navigate to="/login" />} />
         <Route path="/deleted" element={isAuthenticated ? <DeletedPage deletedTasks={deletedTasks} /> : <Navigate to="/login" />} />
       </Routes>
